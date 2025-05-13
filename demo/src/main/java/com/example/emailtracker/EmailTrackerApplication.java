@@ -10,25 +10,35 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.bind.annotation.*;
 import jakarta.mail.internet.MimeMessage;
-import me.paulschwarz.springdotenv.DotenvPropertySource;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication
-@DotenvPropertySource
 public class EmailTrackerApplication {
     public static void main(String[] args) {
         SpringApplication.run(EmailTrackerApplication.class, args);
     }
 
+    @Value("${EMAIL_HOST}")
+    private String emailHost;
+
+    @Value("${EMAIL_PORT}")
+    private String emailPort;
+
+    @Value("${EMAIL_USERNAME}")
+    private String emailUsername;
+
+    @Value("${EMAIL_PASSWORD}")
+    private String emailPassword;
+
     @Bean
     public JavaMailSender javaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost(System.getenv("EMAIL_HOST"));
-        mailSender.setPort(Integer.parseInt(System.getenv("EMAIL_PORT")));
-        mailSender.setUsername(System.getenv("EMAIL_USERNAME"));
-        mailSender.setPassword(System.getenv("EMAIL_PASSWORD"));
+        mailSender.setHost(emailHost);
+        mailSender.setPort(Integer.parseInt(emailPort));
+        mailSender.setUsername(emailUsername);
+        mailSender.setPassword(emailPassword);
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
